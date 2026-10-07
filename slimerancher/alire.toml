@@ -1,0 +1,9 @@
+name = "slimerancher"
+description = "slime rancher ada project for uni"
+version = "0.1.0-dev"
+
+authors = ["Simon, Kasia, Rafal"]
+maintainers = ["Simon <example@example.com>"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []

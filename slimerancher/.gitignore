@@ -1,0 +1,16 @@
+.alire/
+alire/cache/
+/alire/
+
+/obj/
+/objs/
+/bin/
+*.o
+*.ali
+b__*.ads
+b__*.adb
+
+.DS_Store
+Thumbs.db
+
+/config/
