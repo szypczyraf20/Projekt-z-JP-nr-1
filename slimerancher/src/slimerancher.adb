@@ -1,9 +1,11 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Warehouse; use Warehouse;
+with Dostawa; use Dostawa;
 
 procedure Slimerancher is
    Storage : Warehouse_Storage;
    Status  : Storage_Status;
+   dostawa_plortow : array (1 .. 3) of Ogarniacz_Plortow;
 begin
    -- Testing the warehouse module
    -- it works fine, it is safe from overflow + easy to reuse
@@ -25,5 +27,10 @@ begin
      ("Blue plorps: " & Natural'Image (Product_Count (Storage, Blue_Plorp)));
    Put_Line
      ("Gold plorps: " & Natural'Image (Product_Count (Storage, Gold_Plorp)));
+     
+   --połączyłęm dwa mainy w jeden
+   dostawa_plortow(1).Zarejestruj (1, "Pink Plort ", 10);
+   dostawa_plortow(2).Zarejestruj (2, "Tabby Plort", 20);
+   dostawa_plortow(3).Zarejestruj (3, "Boom  Plort", 15);
 
 end Slimerancher;
