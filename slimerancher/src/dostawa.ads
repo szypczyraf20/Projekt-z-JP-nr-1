@@ -26,7 +26,7 @@ package Dostawa is
         entry Zarejestruj (Id : Integer; Towar : String; Ilosc : Integer);
     end Ogarniacz_Plortow;
 
-    task Stanowisko_odbiorow is
+    task type Stanowisko_odbiorow is
         entry rozladuj (ID : Integer; Towar : String; Ilosc : Integer);
     end Stanowisko_odbiorow;
 

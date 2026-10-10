@@ -10,6 +10,7 @@ package body Dostawa is
 
     task body Ogarniacz_Plortow is
         Dostawa_Rekord : Paczka_plortow;
+        Stanowisko : Stanowisko_odbiorow;
     begin
         loop
             select
@@ -26,7 +27,7 @@ package body Dostawa is
 
                 Put_Line (Log_Czas & "Teleportowała się dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Dostawa_Rekord.Towar & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
                 Put_Line (Log_Czas & "Dostawa: nr " & Integer'Image (Dostawa_Rekord.Id) & "  czeka na rozładunek");
-                Stanowisko_odbiorow.rozladuj(Dostawa_Rekord.Id, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
+                Stanowisko.rozladuj(Dostawa_Rekord.Id, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
 
                     
             or
@@ -38,18 +39,23 @@ package body Dostawa is
 
     task body Stanowisko_odbiorow is
         x : Duration;
-
+        Dostawa_Rekord : Paczka_plortow;
     begin
         loop
             select
                 accept rozladuj (Id : Integer; Towar : String; Ilosc : Integer) do
-                Put_Line (Log_Czas & "Rozpoczeto rozładunek dostawy plortów: nr " & Integer'Image (Id));
-                x := Duration(Ilosc/10);
+                    Put_Line (Log_Czas & "Rozpoczeto rozładunek dostawy plortów: nr " & Integer'Image (Id));
+                    Dostawa_Rekord.Id    := Id;
+                    Dostawa_Rekord.Towar := Towar;
+                    Dostawa_Rekord.Ilosc := Ilosc;
+                end rozladuj;
+                x := Duration(Dostawa_Rekord.Ilosc/10);
                 delay Duration(x);
+                
                 Put_Line ("Tu będzie pracował robot...");
                         
-                Put_Line (Log_Czas & "Zakonczono rozładunek dostawy plortów: nr " & Integer'Image (Id));
-                end rozladuj;
+                Put_Line (Log_Czas & "Zakonczono rozładunek dostawy plortów: nr " & Integer'Image (Dostawa_Rekord.Id));
+                
             or
                 terminate;
             end select;
