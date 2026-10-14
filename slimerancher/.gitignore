@@ -14,3 +14,5 @@ b__*.adb
 Thumbs.db
 
 /config/
+
+Makefile

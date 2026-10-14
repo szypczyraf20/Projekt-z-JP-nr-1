@@ -3,12 +3,13 @@ with Ada.Text_IO;
 use Ada.Text_IO;
 with Ada.Calendar; 
 use Ada.Calendar;
+with common_module; use common_module;
 
 package Dostawa is
 
     Type Paczka_plortow is record
         Id : Integer;
-        Towar : String (1 .. 11);
+        Towar : Product_Type;
         Ilosc : Integer;
     end record;
 
@@ -23,11 +24,11 @@ package Dostawa is
     X : Zakres;
 
     task type Ogarniacz_Plortow is
-        entry Zarejestruj (Id : Integer; Towar : String; Ilosc : Integer);
+        entry Zarejestruj (Id : Integer; Towar : Product_Type; Ilosc : Integer);
     end Ogarniacz_Plortow;
 
     task type Stanowisko_odbiorow is
-        entry rozladuj (ID : Integer; Towar : String; Ilosc : Integer);
+        entry rozladuj (ID : Integer; Towar : Product_Type; Ilosc : Integer);
     end Stanowisko_odbiorow;
 
 

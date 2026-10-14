@@ -1,3 +1,5 @@
+with common_module; use common_module;
+
 package body Warehouse is
 
    procedure Initialize

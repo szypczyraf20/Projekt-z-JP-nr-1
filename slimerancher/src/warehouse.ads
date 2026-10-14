@@ -1,5 +1,5 @@
+with common_module; use common_module;
 package Warehouse is
-   type Product_Type is (Pink_Plorp, Blue_Plorp, Gold_Plorp);
 
    type Storage_Status is record
       Used_Space : Natural := 0;

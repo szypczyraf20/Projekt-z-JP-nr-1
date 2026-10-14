@@ -1,12 +1,9 @@
-with Ada.Strings.Bounded;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
-package body robot_module is
-  package B_Str is new
-     Ada.Strings.Bounded.Generic_Bounded_Length
-       (Max => 30);
-     use B_Str;
+with warehouse; use warehouse;
+with common_module; use common_module;
 
+package body robot_module is
   function Log_Czas return String is
       Aktualny_Czas : Time := Clock;
       Roznica       : Duration := Aktualny_Czas - Czas_Startu;
@@ -17,15 +14,18 @@ package body robot_module is
   task body Robot_Type is
 
     Koniec : Boolean := False;
-    TranTowar : Bounded_String;
+    TranTowar : Product_Type;
     TranIlosc : Integer := 5;
+    Storage : Warehouse_Storage;
 
   begin
     while not Koniec loop
       select
 
+      --W tym poleceniu robot musi otrzymać magazyn do którego ma przekazać plorty jako
+      --parametr.
         accept Transportuj(
-          Towar : String;
+          Towar : Product_Type;
           Ilosc : Integer
         ) do
 
@@ -35,7 +35,7 @@ package body robot_module is
             "> otrzymałem transport"
           );
 
-          Overwrite(TranTowar, 1, Towar);
+          TranTowar := Towar;
           TranIlosc := Ilosc;
 
         end Transportuj;
@@ -48,7 +48,7 @@ package body robot_module is
 
         delay 2.0;
 
-        Magazyn.Przyjmij(To_String(TranTowar), TranIlosc);
+        Receive_Product(Storage, TranTowar, TranIlosc);
 
       or
         accept Zakoncz;

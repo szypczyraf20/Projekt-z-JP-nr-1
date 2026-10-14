@@ -1,3 +1,4 @@
+with common_module; use common_module;
 package body Dostawa is
 
     function Log_Czas return String is
@@ -14,7 +15,7 @@ package body Dostawa is
     begin
         loop
             select
-                accept Zarejestruj (Id : Integer; Towar : String; Ilosc : Integer) do
+                accept Zarejestruj (Id : Integer; Towar : Product_Type; Ilosc : Integer) do
                         
                     Dostawa_Rekord.Id    := Id;
                     Dostawa_Rekord.Towar := Towar;
@@ -25,7 +26,7 @@ package body Dostawa is
                 X := Losowanie.Random(Gen);
                 delay Duration(X);
 
-                Put_Line (Log_Czas & "Teleportowała się dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Dostawa_Rekord.Towar & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
+                Put_Line (Log_Czas & "Teleportowała się dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Product_Type'Image(Dostawa_Rekord.Towar) & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
                 Put_Line (Log_Czas & "Dostawa: nr " & Integer'Image (Dostawa_Rekord.Id) & "  czeka na rozładunek");
                 Stanowisko.rozladuj(Dostawa_Rekord.Id, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
 
@@ -43,7 +44,7 @@ package body Dostawa is
     begin
         loop
             select
-                accept rozladuj (Id : Integer; Towar : String; Ilosc : Integer) do
+                accept rozladuj (Id : Integer; Towar : Product_Type; Ilosc : Integer) do
                     Put_Line (Log_Czas & "Rozpoczeto rozładunek dostawy plortów: nr " & Integer'Image (Id));
                     Dostawa_Rekord.Id    := Id;
                     Dostawa_Rekord.Towar := Towar;

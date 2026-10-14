@@ -1,5 +1,7 @@
-with magazyn_module; use magazyn_module;
 with Ada.Calendar; use Ada.Calendar;
+with common_module; use common_module;
+with warehouse; use warehouse;
+
 package robot_module is
 
   Czas_Startu : Time := Clock;
@@ -8,7 +10,7 @@ package robot_module is
   task type Robot_Type(Id : Integer) is
 
     entry Transportuj(
-      Towar : String;
+      Towar : Product_Type;
       Ilosc : Integer
     );
     entry Zakoncz;
