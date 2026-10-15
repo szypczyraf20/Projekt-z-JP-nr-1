@@ -10,6 +10,8 @@ package Warehouse is
 
    type Warehouse_Storage is private;
 
+   type Warehouse_acc is access Warehouse_Storage;
+
    procedure Initialize
      (This     : in out Warehouse_Storage;
       Capacity : Positive := 10);

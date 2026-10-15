@@ -5,19 +5,29 @@ with robot_module; use robot_module;
 with common_module; use common_module;
 
 procedure Slimerancher is
-   Storage : Warehouse_Storage;
+   Storage : Warehouse_acc := new Warehouse_Storage;
    Status  : Storage_Status;
    dostawa_plortow : array (1 .. 3) of Ogarniacz_Plortow;
    r1 : Robot_Type(1);
 begin
    -- Testing the warehouse module
    -- it works fine, it is safe from overflow + easy to reuse
-   Initialize (Storage, 8);
+   -- Teraz jak przekazujecie Storage do jakiejkolwiek funkcji / procedury / entry,
+   -- to musicie na końcu napisać .all, co zmienia tą zmienną ze wskaźnika na zwykły typ.
+   Initialize (Storage.all, 8);
 
-   Receive_Product (Storage, Pink_Plort, 3);
-   Receive_Product (Storage, Blue_Plort, 2);
+   --połączyłęm dwa mainy w jeden
+   --... i zmieniłem trochę kolejność zadań
+   dostawa_plortow(1).Zarejestruj (1, Pink_Plort, 10);
+   dostawa_plortow(2).Zarejestruj (2, Blue_Plort, 20);
+   dostawa_plortow(3).Zarejestruj (3, Gold_Plort, 15);
 
-   Status := Get_Status (Storage);
+   r1.Transportuj(Storage, Pink_Plort, 3);
+   r1.Transportuj(Storage, Blue_Plort, 2);
+
+   r1.Zakoncz;
+
+   Status := Get_Status (Storage.all);
 
    Put_Line ("Warehouse status:");
    Put_Line
@@ -25,17 +35,10 @@ begin
       " / " & Positive'Image (Status.Max_Space));
    Put_Line ("Full: " & Boolean'Image (Status.Is_Full));
    Put_Line
-     ("Pink plorts: " & Natural'Image (Product_Count (Storage, Pink_Plort)));
+     ("Pink plorts: " & Natural'Image (Product_Count (Storage.all, Pink_Plort)));
    Put_Line
-     ("Blue plorts: " & Natural'Image (Product_Count (Storage, Blue_Plort)));
+     ("Blue plorts: " & Natural'Image (Product_Count (Storage.all, Blue_Plort)));
    Put_Line
-     ("Gold plorts: " & Natural'Image (Product_Count (Storage, Gold_Plort)));
+     ("Gold plorts: " & Natural'Image (Product_Count (Storage.all, Gold_Plort)));
      
-   --połączyłęm dwa mainy w jeden
-   dostawa_plortow(1).Zarejestruj (1, Pink_Plort, 10);
-   dostawa_plortow(2).Zarejestruj (2, Blue_Plort, 20);
-   dostawa_plortow(3).Zarejestruj (3, Gold_Plort, 15);
-
-   r1.Zakoncz;
-
 end Slimerancher;

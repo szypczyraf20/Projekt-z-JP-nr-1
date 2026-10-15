@@ -6,10 +6,12 @@ package robot_module is
 
   Czas_Startu : Time := Clock;
   function Log_Czas return String;
+  function Id_text(Id : Integer) return String;
 
   task type Robot_Type(Id : Integer) is
 
     entry Transportuj(
+      Storage : Warehouse_acc;
       Towar : Product_Type;
       Ilosc : Integer
     );
