@@ -13,9 +13,11 @@ package Dostawa is
         Ilosc : Integer;
     end record;
 
+    Total_Deliveries : Natural := 0;
 
     Czas_Startu : Time := Clock;
     function Log_Czas return String;
+    function Get_Total_Deliveries return Natural;
 
     subtype Zakres is Integer range 1 .. 5;
     package Losowanie is

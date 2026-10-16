@@ -8,6 +8,11 @@ package body Dostawa is
         return "[" & Duration'Image(Roznica) & "] ";
     end Log_Czas;
 
+   -- tutaj zostawiam swoja funckje Kasia
+    function Get_Total_Deliveries return Natural is
+    begin
+        return Total_Deliveries;
+    end Get_Total_Deliveries;
 
     task body Ogarniacz_Plortow is
         Dostawa_Rekord : Paczka_plortow;
@@ -26,8 +31,8 @@ package body Dostawa is
                 X := Losowanie.Random(Gen);
                 delay Duration(X);
 
-                Put_Line (Log_Czas & "Teleportowała się dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Product_Type'Image(Dostawa_Rekord.Towar) & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
-                Put_Line (Log_Czas & "Dostawa: nr " & Integer'Image (Dostawa_Rekord.Id) & "  czeka na rozładunek");
+                Put_Line (Log_Czas & "Teleportowala sie dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Product_Type'Image(Dostawa_Rekord.Towar) & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
+                Put_Line (Log_Czas & "Dostawa: nr " & Integer'Image (Dostawa_Rekord.Id) & "  czeka na rozladunek");
                 Stanowisko.rozladuj(Dostawa_Rekord.Id, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
 
                     
@@ -45,18 +50,19 @@ package body Dostawa is
         loop
             select
                 accept rozladuj (Id : Integer; Towar : Product_Type; Ilosc : Integer) do
-                    Put_Line (Log_Czas & "Rozpoczeto rozładunek dostawy plortów: nr " & Integer'Image (Id));
+                    Put_Line (Log_Czas & "Rozpoczeto rozladunek dostawy plortow: nr " & Integer'Image (Id));
                     Dostawa_Rekord.Id    := Id;
                     Dostawa_Rekord.Towar := Towar;
                     Dostawa_Rekord.Ilosc := Ilosc;
                 end rozladuj;
-                x := Duration(Dostawa_Rekord.Ilosc/10);
-                delay Duration(x);
-                
-                Put_Line ("Tu będzie pracował robot...");
-                        
-                Put_Line (Log_Czas & "Zakonczono rozładunek dostawy plortów: nr " & Integer'Image (Dostawa_Rekord.Id));
-                
+                x := Duration (Dostawa_Rekord.Ilosc / 10);
+                delay Duration (x);
+
+                Put_Line ("Tu bedzie pracowal robot...");
+
+                Put_Line (Log_Czas & "Zakonczono rozladunek dostawy plortow: nr " & Integer'Image (Dostawa_Rekord.Id));
+                Total_Deliveries := Total_Deliveries + 1;
+
             or
                 terminate;
             end select;

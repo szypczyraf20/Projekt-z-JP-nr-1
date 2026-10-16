@@ -1,9 +1,12 @@
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
-with warehouse; use warehouse;
+with Warehouse; use Warehouse;
 with common_module; use common_module;
 
 package body robot_module is
+
+  Robot_Status : Robot_Status_Report := (Error => 0, Working => 0, Waiting => 0);
+
   function Log_Czas return String is
       Aktualny_Czas : Time := Clock;
       Roznica       : Duration := Aktualny_Czas - Czas_Startu;
@@ -16,6 +19,11 @@ package body robot_module is
       return Trim(Integer'Image(Id), Ada.Strings.Left);
   end Id_text;
 
+  function Get_Robot_Status return Robot_Status_Report is
+  begin
+      return Robot_Status;
+  end Get_Robot_Status;
+
   task body Robot_Type is
 
     Koniec : Boolean := False;
@@ -24,6 +32,8 @@ package body robot_module is
     TranStorage : Warehouse_acc;
 
   begin
+    Robot_Status.Waiting := Robot_Status.Waiting + 1;
+
     while not Koniec loop
       select
 
@@ -43,8 +53,8 @@ package body robot_module is
 
           Put_Line(
             Log_Czas &
-            "<R" & Id_text(Id) &
-            "> otrzymałem transport"
+            "<R" & Id_text (Id) &
+            "> otrzymalem transport"
           );
           TranStorage := Storage;
           TranTowar := Towar;
@@ -53,10 +63,13 @@ package body robot_module is
 
         end Transportuj;
 
-        Put_Line(
+        Robot_Status.Waiting := Robot_Status.Waiting - 1;
+        Robot_Status.Working := Robot_Status.Working + 1;
+
+        Put_Line (
           Log_Czas &
-          "<R" & Id_text(Id) &
-          "> jadę"
+          "<R" & Id_text (Id) &
+          "> jade"
         );
 
         delay 2.0;
@@ -68,6 +81,9 @@ package body robot_module is
           "<R" & Id_text(Id) &
           "> dostarczono transport."
         );
+
+        Robot_Status.Working := Robot_Status.Working - 1;
+        Robot_Status.Waiting := Robot_Status.Waiting + 1;
 
       or
         accept Zakoncz;
