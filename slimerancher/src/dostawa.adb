@@ -1,4 +1,5 @@
 with common_module; use common_module;
+
 package body Dostawa is
 
     function Log_Czas return String is

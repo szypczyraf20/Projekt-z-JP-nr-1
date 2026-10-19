@@ -4,11 +4,13 @@ with warehouse; use warehouse;
 
 package robot_module is
 
+  Obecne_Id : Integer := 0;
   Czas_Startu : Time := Clock;
+  function Zwroc_i_zwieksz_id return Integer;
   function Log_Czas return String;
   function Id_text(Id : Integer) return String;
 
-  task type Robot_Type(Id : Integer) is
+  task type Robot_Type is
 
     entry Transportuj(
       Storage : Warehouse_acc;

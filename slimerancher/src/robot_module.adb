@@ -4,6 +4,13 @@ with warehouse; use warehouse;
 with common_module; use common_module;
 
 package body robot_module is
+
+  function Zwroc_i_zwieksz_id return Integer is
+  begin
+    Obecne_Id := Obecne_Id + 1;
+    return Obecne_Id;
+  end Zwroc_i_zwieksz_id;
+
   function Log_Czas return String is
       Aktualny_Czas : Time := Clock;
       Roznica       : Duration := Aktualny_Czas - Czas_Startu;
@@ -18,6 +25,7 @@ package body robot_module is
 
   task body Robot_Type is
 
+    Id : Integer := Zwroc_i_zwieksz_id;
     Koniec : Boolean := False;
     TranTowar : Product_Type;
     TranIlosc : Integer := 5;

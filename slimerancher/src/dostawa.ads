@@ -4,6 +4,7 @@ use Ada.Text_IO;
 with Ada.Calendar; 
 use Ada.Calendar;
 with common_module; use common_module;
+with robot_module; use robot_module;
 
 package Dostawa is
 
@@ -15,6 +16,10 @@ package Dostawa is
 
 
     Czas_Startu : Time := Clock;
+
+    n_robotow : Integer := 5;
+    r : array (1 .. n_robotow) of Robot_Type;
+
     function Log_Czas return String;
 
     subtype Zakres is Integer range 1 .. 5;
