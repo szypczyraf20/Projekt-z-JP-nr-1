@@ -5,6 +5,7 @@ with Ada.Calendar;
 use Ada.Calendar;
 with common_module; use common_module;
 with robot_module; use robot_module;
+with warehouse; use warehouse;
 
 package Dostawa is
 
@@ -19,6 +20,7 @@ package Dostawa is
 
     n_robotow : Integer := 5;
     r : array (1 .. n_robotow) of Robot_Type;
+    Storage : Warehouse_acc := new Warehouse_Storage;
 
     function Log_Czas return String;
 

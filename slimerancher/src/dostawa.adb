@@ -54,7 +54,7 @@ package body Dostawa is
                 x := Duration(Dostawa_Rekord.Ilosc/10);
                 delay Duration(x);
                 
-                Put_Line ("Tu będzie pracował robot...");
+                r(1).Transportuj(Storage, Pink_Plort, 1);
                         
                 Put_Line (Log_Czas & "Zakonczono rozładunek dostawy plortów: nr " & Integer'Image (Dostawa_Rekord.Id));
                 
@@ -62,6 +62,7 @@ package body Dostawa is
                 terminate;
             end select;
         end loop;
+        
     end Stanowisko_odbiorow;
 
 
