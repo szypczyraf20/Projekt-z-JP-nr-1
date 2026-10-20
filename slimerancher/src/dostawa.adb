@@ -2,6 +2,14 @@ with common_module; use common_module;
 
 package body Dostawa is
 
+    --You are being terminated!
+    procedure Zakoncz_Roboty is
+    begin
+      for robot of r loop
+        robot.Zakoncz;
+      end loop;
+    end Zakoncz_Roboty;
+
     function Log_Czas return String is
         Aktualny_Czas : Time := Clock;
         Roznica       : Duration := Aktualny_Czas - Czas_Startu;

@@ -8,7 +8,6 @@ procedure Slimerancher is
    Storage : Warehouse_acc := new Warehouse_Storage;
    Status  : Storage_Status;
    dostawa_plortow : array (1 .. 3) of Ogarniacz_Plortow;
-   r := array (1 .. n_robotow) of Robot_Type;
 begin
    -- Testing the warehouse module
    -- it works fine, it is safe from overflow + easy to reuse
@@ -36,8 +35,6 @@ begin
    Put_Line
      ("Gold plorts: " & Natural'Image (Product_Count (Storage.all, Gold_Plort)));
 
-  for i in 1 .. n_robotow loop
-    r(i).Zakoncz;
-  end loop;
+   Zakoncz_Roboty;
      
 end Slimerancher;

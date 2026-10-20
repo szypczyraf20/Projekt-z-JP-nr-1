@@ -19,8 +19,11 @@ package Dostawa is
     Czas_Startu : Time := Clock;
 
     n_robotow : Integer := 5;
-    r : array (1 .. n_robotow) of Robot_Type;
+    r : Robot_Array(1 .. n_robotow);
     Storage : Warehouse_acc := new Warehouse_Storage;
+
+    --  procedure Zinicjalizuj_Roboty(n : Integer);
+    procedure Zakoncz_Roboty;
 
     function Log_Czas return String;
 
