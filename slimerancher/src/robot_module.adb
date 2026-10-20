@@ -35,13 +35,6 @@ package body robot_module is
     while not Koniec loop
       select
 
-      --W tym poleceniu robot musi otrzymać magazyn do którego ma przekazać plorty jako
-      --parametr.
-      --    accept Przypisz_magazyn(in out Storage : Warehouse_Storage) do
-      --    end Przypisz_magazyn;
-      --
-      --  or
-
       --We have a serious fucking problem.
         accept Transportuj(
           Storage : Warehouse_acc;
@@ -80,6 +73,10 @@ package body robot_module is
       or
         accept Zakoncz;
         Koniec := True;
+
+      --W najlepszym wypadku to jest tymczasowe.
+      or
+	terminate;
 
       end select;
 

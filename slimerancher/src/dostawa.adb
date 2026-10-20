@@ -62,9 +62,22 @@ package body Dostawa is
                 x := Duration(Dostawa_Rekord.Ilosc/10);
                 delay Duration(x);
                 
-                r(1).Transportuj(Storage, Pink_Plort, 1);
-                        
                 Put_Line (Log_Czas & "Zakonczono rozładunek dostawy plortów: nr " & Integer'Image (Dostawa_Rekord.Id));
+                  
+                --Wyszukiwanie niezajętego robota.
+                for I in 1 .. n_robotow loop
+                  select
+                    r(I).Transportuj(Storage, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
+                    --Jeśli zostanie znaleziony - wychodzimy z pętli.
+                    exit;
+                  else
+                    --Jeśli nie - kontynuujemy, sprawdzamy następnego.
+                    null;
+                  end select;
+                end loop;
+                --Jest przez to też możliwość, że nie zostanie znaleziony żaden wolny
+                --robot i to potencjalnie w przyszłości może być problem, ale na razie
+                --znajdujemy się w teraźniejszości, więc on nas nie dotyczy.
                 
             or
                 terminate;

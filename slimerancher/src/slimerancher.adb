@@ -35,6 +35,6 @@ begin
    Put_Line
      ("Gold plorts: " & Natural'Image (Product_Count (Storage.all, Gold_Plort)));
 
-   Zakoncz_Roboty;
+   --  Zakoncz_Roboty;
      
 end Slimerancher;
