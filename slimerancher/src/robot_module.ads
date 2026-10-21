@@ -6,10 +6,16 @@ package robot_module is
 
   Obecne_Id : Integer := 0;
   Czas_Startu : Time := Clock;
+  Szansa_Eksplozji : Integer := 25;
 
   function Zwroc_i_zwieksz_id return Integer;
   function Log_Czas return String;
   function Id_text(Id : Integer) return String;
+  function random return Zakres_1_100;
+  function Czy_Wybuchnie return Boolean;
+
+  --Zacznę się tym zajmować Dnia 21.10.2026 o 21:21
+  task type Serwis_Naprawczy_Type;
 
   task type Robot_Type is
 
@@ -21,6 +27,7 @@ package robot_module is
     entry Zakoncz;
 
   end Robot_Type;
+
 
   type Robot_Array is array (Integer range <>) of Robot_Type;
 end robot_module;
