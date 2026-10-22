@@ -16,9 +16,6 @@ package body Monitor is
       Status.Free_Space       := Storage_Info.Max_Space - Storage_Info.Used_Space;
       Status.Percent_Full     := Storage_Info.Percent_Full;
       Status.Total_Deliveries := Get_Total_Deliveries;
-      --  Status.Pink_Plort       := Product_Count (Storage, Pink_Plort);
-      --  Status.Blue_Plort       := Product_Count (Storage, Blue_Plort);
-      --  Status.Gold_Plort       := Product_Count (Storage, Gold_Plort);
       Status.Robots_Waiting   := Robot_Status.Waiting;
       Status.Robots_Working   := Robot_Status.Working;
       Status.Robots_Error     := Robot_Status.Error;
@@ -27,7 +24,7 @@ package body Monitor is
 
    procedure Display_Status (Storage : Warehouse_Storage) is
       Status : constant Warehouse_Report := Get_Status (Storage);
-      Border : constant String := "+---------------------------------------+---------+";
+      Border : constant String := "+-------------------------------------------------+";
 
       function Format (Value : Natural) return String is
       begin
@@ -42,12 +39,9 @@ package body Monitor is
       Put_Line ("| Free space                            | " & Format (Status.Free_Space) & "   |");
       Put_Line ("| Fullness                              | " & Format (Status.Percent_Full) & "%   |");
       Put_Line ("| Total deliveries                      | " & Format (Status.Total_Deliveries) & "   |");
-      --  Put_Line ("| Pink plorts                           | " & Format (Status.Pink_Plort) & "   |");
-      --  Put_Line ("| Blue plorts                           | " & Format (Status.Blue_Plort) & "   |");
-      --  Put_Line ("| Gold plorts                           | " & Format (Status.Gold_Plort) & "   |");
-      for Product of Product_Type loop
-         Put_Line ("| " & Product'Image (Product) & " plorts" &
-                   " " & Format (Product_Count (Storage.all, Product)) & "   |");
+      for Product in Product_Type'Range loop
+         Put_Line ("| " & Product_Type'Image (Product) & " plorts" &
+                   " " & Format (Product_Count (Storage, Product)) & "   |");
       end loop;
       Put_Line ("| Robots waiting                        | " & Format (Status.Robots_Waiting) & "   |");
       Put_Line ("| Robots working                        | " & Format (Status.Robots_Working) & "   |");

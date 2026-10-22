@@ -4,8 +4,12 @@ use Ada.Text_IO;
 with Ada.Calendar; 
 use Ada.Calendar;
 with common_module; use common_module;
+with robot_module; use robot_module;
+with warehouse; use warehouse;
 
 package Dostawa is
+
+    Total_Deliveries : Natural := 0;
 
     Type Paczka_plortow is record
         Id : Integer;
@@ -13,10 +17,8 @@ package Dostawa is
         Ilosc : Integer;
     end record;
 
-    Total_Deliveries : Natural := 0;
+    Storage : Warehouse_acc := new Warehouse_Storage;
 
-    Czas_Startu : Time := Clock;
-    function Log_Czas return String;
     function Get_Total_Deliveries return Natural;
 
     subtype Zakres is Integer range 1 .. 5;
