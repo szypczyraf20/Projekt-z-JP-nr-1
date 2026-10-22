@@ -98,7 +98,7 @@ package body Dostawa is
                 
                 if not Znaleziono_Robota then
                     delay 2.0;
-                    Put_Line (Log_Czas & "Plorty z dostawy: nr " & Integer'Image (Dostawa_Rekord.Id) & " zniknęły");
+                    Put_Line (Log_Czas & "Plorty z dostawy: nr " & Integer'Image (Dostawa_Rekord.Id) & " zniknely");
                     
                 end if;
 

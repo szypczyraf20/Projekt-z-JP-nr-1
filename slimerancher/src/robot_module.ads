@@ -8,15 +8,6 @@ package robot_module is
   Czas_Startu : Time := Clock;
   Szansa_Eksplozji : Integer := 25;
 
-  type Robot_Status_Report is record
-    Waiting : Natural := 0;
-    Working : Natural := 0;
-    Error   : Natural := 0;
-  end record;
-
-  Robot_Status : Robot_Status_Report := (others => 0);
-
-  function Get_Robot_Status return Robot_Status_Report;
   function Zwroc_i_zwieksz_id return Integer;
   function Id_text(Id : Integer) return String;
   function random return Zakres_1_100;
@@ -25,6 +16,8 @@ package robot_module is
   procedure Zakoncz_Roboty;
 
   type Status_Type is (Dziala, Zepsuty, W_naprawie);
+  type Status_Counts is array (Status_Type) of Natural;
+  function Get_Robot_Status return Status_Counts;
 
   task type Robot_Type is
 

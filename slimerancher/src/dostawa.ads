@@ -16,7 +16,6 @@ package Dostawa is
         Towar : Product_Type;
         Ilosc : Integer;
     end record;
-
     Storage : Warehouse_acc := new Warehouse_Storage;
 
     function Get_Total_Deliveries return Natural;

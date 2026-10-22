@@ -5,9 +5,15 @@ with common_module; use common_module;
 
 package body robot_module is
 
-  function Get_Robot_Status return Robot_Status_Report is
+  function Get_Robot_Status return Status_Counts is
+    Counts : Status_Counts := (others => 0);
+    S : Status_Type;
   begin
-    return Robot_Status;
+    for I in r'Range loop
+      r(I).Zwroc_Status(S);
+      Counts(S) := Counts(S) + 1;
+    end loop;
+    return counts;
   end Get_Robot_Status;
 
   function Zwroc_i_zwieksz_id return Integer is
@@ -76,8 +82,6 @@ package body robot_module is
     Wybuchnie : Boolean := False;
     Czas_Do_Wybuchu : Duration := 0.0;
   begin
-    Robot_Status.Waiting := Robot_Status.Waiting + 1;
-
     while not Koniec loop
       select
 
@@ -100,11 +104,7 @@ package body robot_module is
           TranTowar := Towar;
           TranIlosc := Ilosc;
           TranId_dostawy :=Id_dostawy;
-
         end Transportuj;
-
-        Robot_Status.Waiting := Robot_Status.Waiting - 1;
-        Robot_Status.Working := Robot_Status.Working + 1;
 
         Put_Line (
           Log_Czas &
@@ -126,9 +126,6 @@ package body robot_module is
 
           delay Czas_Transportu;
           Receive_Product(TranStorage.all, TranTowar, TranIlosc);
-          Robot_Status.Working := Robot_Status.Working - 1;
-          Robot_Status.Waiting := Robot_Status.Waiting + 1;
-
           Put_Line(
             Log_Czas &
             "<R" & Id_text(Id) &
@@ -147,7 +144,6 @@ package body robot_module is
         end Zwroc_Status;
       or
         accept Do_Naprawy;
-        Robot_Status.Error := Robot_Status.Error + 1;
         Status := W_naprawie;
       or
         accept Uruchom_Ponownie;

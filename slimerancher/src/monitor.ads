@@ -8,7 +8,7 @@ package Monitor is
       Free_Space       : Natural := 0;
       Percent_Full     : Natural := 0;
       Total_Deliveries : Natural := 0;
-      Robots_Waiting   : Natural := 0;
+      Robots_InRepair   : Natural := 0;
       Robots_Working   : Natural := 0;
       Robots_Error     : Natural := 0;
    end record;
