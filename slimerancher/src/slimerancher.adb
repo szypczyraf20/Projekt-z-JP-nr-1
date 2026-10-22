@@ -7,10 +7,6 @@ with common_module; use common_module;
 procedure Slimerancher is
    Storage : Warehouse_acc := new Warehouse_Storage;
    Status  : Storage_Status;
---  <<<<<<< HEAD
---     dostawa_plortow : array (1 .. 20) of Ogarniacz_Plortow;
---  =======
---  >>>>>>> roboty_module
    dostawa_plortow : array (1 .. 10) of Ogarniacz_Plortow;
 begin
    -- Testing the warehouse module
@@ -21,14 +17,6 @@ begin
 
    --połączyłęm dwa mainy w jeden
    --... i zmieniłem trochę kolejność zadań
---  <<<<<<< HEAD
---      for I in 1 .. 20 loop
---          dostawa_plortow(I).Zarejestruj (I, Gold_Plort, 15);
---      end loop;
---
---
---  =======
---  >>>>>>> roboty_module
    dostawa_plortow(1).Zarejestruj (1, Pink_Plort, 10);
    dostawa_plortow(2).Zarejestruj (2, Blue_Plort, 20);
    dostawa_plortow(3).Zarejestruj (3, Gold_Plort, 15);

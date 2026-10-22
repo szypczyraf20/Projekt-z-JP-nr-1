@@ -63,10 +63,6 @@ package body robot_module is
     Czas_Transportu : Duration := 2.0;
     Wybuchnie : Boolean := False;
     Czas_Do_Wybuchu : Duration := 0.0;
---  <<<<<<< HEAD
---  =======
---
---  >>>>>>> roboty_module
   begin
     while not Koniec loop
       select
@@ -112,19 +108,15 @@ package body robot_module is
           Serwis.Napraw(Id);
         else
 
---  <<<<<<< HEAD
---  =======
---  >>>>>>> roboty_module
-
           delay Czas_Transportu;
           Receive_Product(TranStorage.all, TranTowar, TranIlosc);
 
-        Put_Line(
-          Log_Czas &
-          "<R" & Id_text(Id) &
-          "> dostarczono transport " &
-          "nr " & Id_text(TranId_dostawy)
-        );
+          Put_Line(
+            Log_Czas &
+            "<R" & Id_text(Id) &
+            "> dostarczono transport " &
+            "nr " & Id_text(TranId_dostawy)
+          );
 
         end if;
       or
