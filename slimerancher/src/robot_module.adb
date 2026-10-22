@@ -11,13 +11,6 @@ package body robot_module is
     return Obecne_Id;
   end Zwroc_i_zwieksz_id;
 
-  function Log_Czas return String is
-      Aktualny_Czas : Time := Clock;
-      Roznica       : Duration := Aktualny_Czas - Czas_Startu;
-  begin
-      return "[" & Trim(Duration'Image(Roznica), Ada.Strings.Left) & "] ";
-  end Log_Czas;
-
   function Id_text(Id : Integer) return String is
   begin
       return Trim(Integer'Image(Id), Ada.Strings.Left);
@@ -33,19 +26,28 @@ package body robot_module is
     test : Zakres_1_100;
   begin
     test := random;
-    return test < Szansa_Eksplozji;
+    return test <= Szansa_Eksplozji;
   end Czy_Wybuchnie;
 
+  --O godzinie 12:23 dnia bierzącego dodam informację o czasie w którym rozpoczęła się
+  --i zakończyła naprawa robota oraz przeniosę funkcję Log_Czas do common_module
   task body Serwis_Naprawczy_Type is
     Czas_Naprawy_Robota : Duration := 2.0;
+    Id_Naprawianego : Integer := 0;
   begin
-    null;
-    --  select
-    --    Put_Line("Naprawiam robota...");
-    --    delay Czas_Naprawy_Robota;
-    --  or
-    --    terminate;
-    --  end select;
+    loop
+      select
+        accept Napraw(Id : Integer) do
+          Id_Naprawianego := Id;
+        end Napraw;
+        Put_Line(Log_Czas & "Naprawiam robota o id " & Id_text(Id_Naprawianego) & "...");
+        delay Czas_Naprawy_Robota;
+        Put_Line(Log_Czas & "Zakończono naprawę robota R" & Id_text(Id_Naprawianego) & ".");
+        r(Id_Naprawianego).Uruchom_Ponownie;
+      or
+        terminate;
+      end select;
+    end loop;
   end Serwis_Naprawczy_Type;	
 
   task body Robot_Type is
@@ -91,7 +93,6 @@ package body robot_module is
           "> jadę"
         );
 
-        --  Put_Line("Eksplozja = " & Boolean'Image(Czy_Wybuchnie));
         if TranTowar = Boom_Plort then
           Wybuchnie := Czy_Wybuchnie;
         end if;
@@ -101,6 +102,7 @@ package body robot_module is
           delay Czas_Do_Wybuchu;
           Put_Line("Bum! Robot " & Id_text(Id) & " wybuchł!");
           Zepsuty := True;
+          Serwis.Napraw(Id);
         else
 
           delay Czas_Transportu;
@@ -114,6 +116,9 @@ package body robot_module is
           );
 
         end if;
+      or
+        accept Uruchom_Ponownie;
+        Zepsuty := False;
       or
         accept Zakoncz;
         Koniec := True;
