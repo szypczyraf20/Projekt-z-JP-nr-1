@@ -15,7 +15,7 @@ package common_module is
 
     n_robotow : Integer := 5;
 
-    n_dostaw : Integer := 15;
+    n_dostaw : Integer := 20;
 
     subtype Zakres_10_100 is Integer range 10 .. 100;
     package Losowanie_10_100 is

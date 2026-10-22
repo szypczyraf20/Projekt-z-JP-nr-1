@@ -6,6 +6,8 @@ package body Dostawa is
         Dostawa_Rekord : Paczka_plortow;
         Stanowisko : Stanowisko_odbiorow;
         Y : Duration;
+        G : Generator;
+        Z : Uniformly_Distributed;
     begin
         loop
             select
@@ -15,10 +17,10 @@ package body Dostawa is
                     Dostawa_Rekord.Towar := Towar;
                     Dostawa_Rekord.Ilosc := Ilosc;
                 end Zarejestruj;
-
+                Reset(G);
                 Losowanie.Reset(Gen);
                 X := Losowanie.Random(Gen);
-                Y := Duration(X) + Obecny_czas;
+                Y := Duration(Random(G)*10.0);
                 delay Y;
 
                 Put_Line (Log_Czas & "Teleportowała się dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Product_Type'Image(Dostawa_Rekord.Towar) & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
@@ -41,6 +43,7 @@ package body Dostawa is
 
         --Moje zmienne (oby były tymczasowe)
         Statusy : array(1 .. n_robotow) of Status_Type;
+        Czas_Zakonczenia : Duration := Obecny_czas;
     begin
         loop
             select
@@ -50,23 +53,26 @@ package body Dostawa is
                     Dostawa_Rekord.Towar := Towar;
                     Dostawa_Rekord.Ilosc := Ilosc;
                 end rozladuj;
-                x := Duration(Float(Dostawa_Rekord.Ilosc) / 10.0);
-                delay Duration(x);
+                
                 
                 Znaleziono_Robota := False;
                 
                 --Wyszukiwanie niezajętego robota.
                 
-                    for I in 1 .. n_robotow loop
-                      select
-                          r(I).Transportuj(Storage, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc, Dostawa_Rekord.Id);
-                          --Jeśli zostanie znaleziony - wychodzimy z pętli.
-                          Znaleziono_Robota := True;
-                          exit;
-                      else
-                          
-                          null;
-                      end select;
+                    Czas_Zakonczenia := Obecny_czas + Czas_do_znikniecia;
+                    while Obecny_czas <= Czas_Zakonczenia and Znaleziono_Robota = False loop
+                        --Put_Line("Obecny_czas =" & Duration'Image(Obecny_czas));
+                        for I in 1 .. n_robotow loop
+                            select
+                                r(I).Transportuj(Storage, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc, Dostawa_Rekord.Id);
+                                --Jeśli zostanie znaleziony - wychodzimy z pętli.
+                                Znaleziono_Robota := True;
+                                exit;
+                            else
+                                
+                                null;
+                            end select;
+                        end loop;
                     end loop;
 
                     --Sprawdzanie statusu robotów (czy działają)

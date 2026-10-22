@@ -6,6 +6,8 @@ use Ada.Calendar;
 with common_module; use common_module;
 with robot_module; use robot_module;
 with warehouse; use warehouse;
+with Ada.Numerics.Float_Random;
+use  Ada.Numerics.Float_Random;
 
 package Dostawa is
 
@@ -16,8 +18,9 @@ package Dostawa is
     end record;
 
     Storage : Warehouse_acc := new Warehouse_Storage;
+    Czas_do_znikniecia : Duration := 2.0;
 
-    subtype Zakres is Integer range 1 .. 5;
+    subtype Zakres is Integer range 1 .. 20;
     package Losowanie is
         new Ada.Numerics.Discrete_Random(Zakres);
     Gen : Losowanie.Generator;
