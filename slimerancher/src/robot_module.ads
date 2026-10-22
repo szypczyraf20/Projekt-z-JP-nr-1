@@ -24,6 +24,8 @@ package robot_module is
 
   procedure Zakoncz_Roboty;
 
+  type Status_Type is (Dziala, Zepsuty, W_naprawie);
+
   task type Robot_Type is
 
     entry Transportuj(
@@ -32,6 +34,10 @@ package robot_module is
       Ilosc : Integer;
       Id_dostawy : Integer
     );
+    entry Czy_Zepsuty(czy_zepsuty : out Boolean);
+    entry Zwroc_Id(I : out Integer);
+    entry Zwroc_Status(S : out Status_Type);
+    entry Do_Naprawy;
     entry Uruchom_Ponownie;
     entry Zakoncz;
 
@@ -43,7 +49,7 @@ package robot_module is
   r : Robot_Array(1 .. n_robotow);
 
   task type Serwis_Naprawczy_Type is
-    entry Napraw(Id : Integer);
+    entry Napraw(robot : Robot_Type);
   end Serwis_Naprawczy_Type;
 
   Serwis : Serwis_Naprawczy_Type;

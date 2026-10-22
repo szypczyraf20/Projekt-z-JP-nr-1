@@ -6,9 +6,13 @@ with common_module; use common_module;
 with Monitor; use Monitor;
 
 procedure Slimerancher is
+  --Tak btw, Szymon ta zmienna Storage poniżej nie jest do niczego wykorzystywana. Ta,
+  --która jest parametrem dla robotów jest zadeklarowana w pliku dostawa.ads (nie
+  --umiałem jej w jakiś sprytny sposób przekazać do robotów)
    Storage : Warehouse_acc := new Warehouse_Storage;
+   --Tą zmienną pewnie też będziesz musiał przenieść.
    Status  : Storage_Status;
-   dostawa_plortow : array (1 .. 10) of Ogarniacz_Plortow;
+   dostawa_plortow : array (1 .. n_dostaw) of Ogarniacz_Plortow;
 begin
    -- Testing the warehouse module
    -- it works fine, it is safe from overflow + easy to reuse
@@ -18,12 +22,10 @@ begin
 
    --połączyłęm dwa mainy w jeden
    --... i zmieniłem trochę kolejność zadań
-   dostawa_plortow(1).Zarejestruj (1, Pink_Plort, 10);
-   dostawa_plortow(2).Zarejestruj (2, Blue_Plort, 20);
-   dostawa_plortow(3).Zarejestruj (3, Gold_Plort, 15);
-   for I in 4 .. 10 loop
-     dostawa_plortow(I).Zarejestruj (4, Boom_Plort, 15);
-   end loop;   
+   for I in 1 .. n_dostaw loop
+    Losowanie_10_100.Reset(Gen_10_100);
+     dostawa_plortow(I).Zarejestruj (I, Losowy_plort, Losowanie_10_100.Random(Gen_10_100));
+   end loop;
 
    Display_Status(Storage.all);
 

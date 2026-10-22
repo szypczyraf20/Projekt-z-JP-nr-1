@@ -49,13 +49,14 @@ package body robot_module is
   begin
     loop
       select
-        accept Napraw(Id : Integer) do
-          Id_Naprawianego := Id;
+        accept Napraw(robot : Robot_Type) do
+          robot.Do_Naprawy;
+          robot.Zwroc_Id(Id_Naprawianego);
+          Put_Line(Log_Czas & "Naprawiam robota o id " & Id_text(Id_Naprawianego) & "...");
+          delay Czas_Naprawy_Robota;
+          Put_Line(Log_Czas & "Zakonczono naprawe robota R" & Id_text(Id_Naprawianego) & ".");
+          robot.Uruchom_Ponownie;
         end Napraw;
-        Put_Line(Log_Czas & "Naprawiam robota o id " & Id_text(Id_Naprawianego) & "...");
-        delay Czas_Naprawy_Robota;
-        Put_Line(Log_Czas & "Zakonczono naprawe robota R" & Id_text(Id_Naprawianego) & ".");
-        r(Id_Naprawianego).Uruchom_Ponownie;
       or
         terminate;
       end select;
@@ -66,7 +67,7 @@ package body robot_module is
 
     Id : Integer := Zwroc_i_zwieksz_id;
     Koniec : Boolean := False;
-    Zepsuty : Boolean := False;
+    Status : Status_Type := Dziala;
     TranTowar : Product_Type;
     TranIlosc : Integer := 0;
     TranStorage : Warehouse_acc;
@@ -81,7 +82,7 @@ package body robot_module is
       select
 
       --We have a serious fucking problem.
-      when Zepsuty = False =>
+      when Status = Dziala =>
         accept Transportuj(
           Storage : Warehouse_acc;
           Towar : Product_Type;
@@ -119,11 +120,8 @@ package body robot_module is
         if Wybuchnie then
           Czas_Do_Wybuchu := (Czas_Transportu / 100) * random;
           delay Czas_Do_Wybuchu;
-          Put_Line("Bum! Robot " & Id_text(Id) & " wybuchl!");
-          Robot_Status.Working := Robot_Status.Working - 1;
-          Robot_Status.Error := Robot_Status.Error + 1;
-          Zepsuty := True;
-          Serwis.Napraw(Id);
+          Put_Line("Bum! Robot " & Id_text(Id) & " z dostawa " & Id_text(TranId_dostawy) & " wybuchl!");
+          Status := Zepsuty;
         else
 
           delay Czas_Transportu;
@@ -140,10 +138,24 @@ package body robot_module is
 
         end if;
       or
+        accept Czy_Zepsuty(czy_zepsuty : out Boolean) do
+          czy_zepsuty := Status = Zepsuty;
+        end Czy_Zepsuty;
+      or
+        accept Zwroc_Status(S : out Status_Type) do
+          S := Status;
+        end Zwroc_Status;
+      or
+        accept Do_Naprawy;
+        Robot_Status.Error := Robot_Status.Error + 1;
+        Status := W_naprawie;
+      or
         accept Uruchom_Ponownie;
-        Zepsuty := False;
-        Robot_Status.Error := Robot_Status.Error - 1;
-        Robot_Status.Waiting := Robot_Status.Waiting + 1;
+        Status := Dziala;
+      or
+        accept Zwroc_Id(I : out Integer) do
+          I := Id;
+        end Zwroc_Id;
       or
         accept Zakoncz;
         Koniec := True;

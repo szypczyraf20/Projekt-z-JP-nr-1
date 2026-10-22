@@ -16,4 +16,10 @@ package body common_module is
   begin
       return Roznica;
   end Obecny_czas;
+
+  function Losowy_plort return Product_Type is
+
+  begin
+    return Losowanie_plortow.Random(Gen_plortow);
+  end Losowy_plort;
 end common_module;
