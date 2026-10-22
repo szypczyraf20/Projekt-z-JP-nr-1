@@ -44,13 +44,14 @@ package body robot_module is
   begin
     loop
       select
-        accept Napraw(Id : Integer) do
-          Id_Naprawianego := Id;
+        accept Napraw(robot : Robot_Type) do
+          robot.Do_Naprawy;
+          robot.Zwroc_Id(Id_Naprawianego);
+          Put_Line(Log_Czas & "Naprawiam robota o id " & Id_text(Id_Naprawianego) & "...");
+          delay Czas_Naprawy_Robota;
+          Put_Line(Log_Czas & "Zakończono naprawę robota R" & Id_text(Id_Naprawianego) & ".");
+          robot.Uruchom_Ponownie;
         end Napraw;
-        Put_Line(Log_Czas & "Naprawiam robota o id " & Id_text(Id_Naprawianego) & "...");
-        delay Czas_Naprawy_Robota;
-        Put_Line(Log_Czas & "Zakończono naprawę robota R" & Id_text(Id_Naprawianego) & ".");
-        r(Id_Naprawianego).Uruchom_Ponownie;
       or
         terminate;
       end select;
@@ -61,7 +62,7 @@ package body robot_module is
 
     Id : Integer := Zwroc_i_zwieksz_id;
     Koniec : Boolean := False;
-    Zepsuty : Boolean := False;
+    Status : Status_Type := Dziala;
     TranTowar : Product_Type;
     TranIlosc : Integer := 0;
     TranStorage : Warehouse_acc;
@@ -74,7 +75,7 @@ package body robot_module is
       select
 
       --We have a serious fucking problem.
-      when Zepsuty = False =>
+      when Status = Dziala =>
         accept Transportuj(
           Storage : Warehouse_acc;
           Towar : Product_Type;
@@ -110,8 +111,7 @@ package body robot_module is
           Czas_Do_Wybuchu := (Czas_Transportu / 100) * random;
           delay Czas_Do_Wybuchu;
           Put_Line("Bum! Robot " & Id_text(Id) & " wybuchł!");
-          Zepsuty := True;
-          Serwis.Napraw(Id);
+          Status := Zepsuty;
         else
 
           delay Czas_Transportu;
@@ -126,8 +126,23 @@ package body robot_module is
 
         end if;
       or
+        accept Czy_Zepsuty(czy_zepsuty : out Boolean) do
+          czy_zepsuty := Status = Zepsuty;
+        end Czy_Zepsuty;
+      or
+        accept Zwroc_Status(S : out Status_Type) do
+          S := Status;
+        end Zwroc_Status;
+      or
+        accept Do_Naprawy;
+        Status := W_naprawie;
+      or
         accept Uruchom_Ponownie;
-        Zepsuty := False;
+        Status := Dziala;
+      or
+        accept Zwroc_Id(I : out Integer) do
+          I := Id;
+        end Zwroc_Id;
       or
         accept Zakoncz;
         Koniec := True;
