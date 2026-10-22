@@ -37,13 +37,10 @@ package body Dostawa is
     task body Stanowisko_odbiorow is
         x : Duration;
         Dostawa_Rekord : Paczka_plortow;
-<<<<<<< HEAD
         Znaleziono_Robota : Boolean;
-=======
 
         --Moje zmienne (oby były tymczasowe)
         Statusy : array(1 .. n_robotow) of Status_Type;
->>>>>>> roboty_module
     begin
         loop
             select
