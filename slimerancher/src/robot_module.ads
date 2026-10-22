@@ -6,13 +6,15 @@ package robot_module is
 
   Obecne_Id : Integer := 0;
   Czas_Startu : Time := Clock;
-  Szansa_Eksplozji : Integer := 25;
+  Szansa_Eksplozji : Integer := 100;
 
   function Zwroc_i_zwieksz_id return Integer;
   function Id_text(Id : Integer) return String;
   function random return Zakres_1_100;
   function Czy_Wybuchnie return Boolean;
 
+  procedure Jade_z(Id : Integer; TranId_dostawy : Integer; czy_czesc : Boolean);
+  procedure Dostarczono(Id : Integer; TranId_dostawy : Integer; czy_czesc : Boolean);
   procedure Zakoncz_Roboty;
 
   type Status_Type is (Dziala, Zepsuty, W_naprawie);

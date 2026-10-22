@@ -29,6 +29,44 @@ package body robot_module is
     return test <= Szansa_Eksplozji;
   end Czy_Wybuchnie;
 
+  procedure Jade_z(Id : Integer; TranId_dostawy : Integer; czy_czesc : Boolean) is
+  begin
+    if czy_czesc = True then
+      Put_Line(
+        Log_Czas &
+        "<R" & Id_text(Id) &
+        "> jadę z częścią dostawy " &
+        "nr " & Id_text(TranId_dostawy)
+      );
+    else
+      Put_Line(
+        Log_Czas &
+        "<R" & Id_text(Id) &
+        "> jadę z dostawą " &
+        "nr " & Id_text(TranId_dostawy)
+      );
+    end if;
+  end Jade_z;
+
+  procedure Dostarczono(Id : Integer; TranId_dostawy : Integer; czy_czesc : Boolean) is
+  begin
+    if czy_czesc = True then
+      Put_Line(
+        Log_Czas &
+        "<R" & Id_text(Id) &
+        "> dostarczono część transportu " &
+        "nr " & Id_text(TranId_dostawy)
+      );
+    else
+      Put_Line(
+        Log_Czas &
+        "<R" & Id_text(Id) &
+        "> dostarczono transport " &
+        "nr " & Id_text(TranId_dostawy)
+      );
+    end if;
+  end Dostarczono;
+
   --You are being terminated!
   procedure Zakoncz_Roboty is
   begin
@@ -67,9 +105,12 @@ package body robot_module is
     TranIlosc : Integer := 0;
     TranStorage : Warehouse_acc;
     TranId_dostawy : Integer;
+    Calkowita_Ilosc : Integer := 0;
+    Pojemnosc : Integer := 50;
     Czas_Transportu : Duration := 2.0;
     Wybuchnie : Boolean := False;
     Czas_Do_Wybuchu : Duration := 0.0;
+    Czy_Czesc_Dostawy : Boolean;
   begin
     while not Koniec loop
       select
@@ -91,43 +132,46 @@ package body robot_module is
           );
           TranStorage := Storage;
           TranTowar := Towar;
-          TranIlosc := Ilosc;
-          TranId_dostawy :=Id_dostawy;
+          Calkowita_Ilosc := Ilosc;
+          TranId_dostawy := Id_dostawy;
 
         end Transportuj;
 
-        Put_Line(
-          Log_Czas &
-          "<R" & Id_text(Id) &
-          "> jadę z dostawą " &
-          "nr " & Id_text(TranId_dostawy)
-        );
-
-        --To jest po to, by po wybuchu i naprawieniu robota nie eksplodował on ponownie
-        --ze względu na to, że zmienna Wybuchnie wciąż będzie równa True.
-        Wybuchnie := False;
-        if TranTowar = Boom_Plort then
-          Wybuchnie := Czy_Wybuchnie;
-        end if;
-
-        if Wybuchnie then
-          Czas_Do_Wybuchu := (Czas_Transportu / 100) * random;
-          delay Czas_Do_Wybuchu;
-          Put_Line("Bum! Robot " & Id_text(Id) & " z dostawą " & Id_text(TranId_dostawy) & " wybuchł!");
-          Status := Zepsuty;
+        TranIlosc := Integer'Min(Calkowita_Ilosc, Pojemnosc);
+        if Calkowita_Ilosc <= Pojemnosc then
+          Czy_Czesc_Dostawy := False;
         else
-
-          delay Czas_Transportu;
-          Receive_Product(TranStorage.all, TranTowar, TranIlosc);
-
-          Put_Line(
-            Log_Czas &
-            "<R" & Id_text(Id) &
-            "> dostarczono transport " &
-            "nr " & Id_text(TranId_dostawy)
-          );
-
+          Czy_Czesc_Dostawy := True;
         end if;
+
+        while(TranIlosc > 0) loop
+          TranIlosc := Integer'Min(Calkowita_Ilosc, Pojemnosc);
+          Jade_z(Id, TranId_dostawy, Czy_Czesc_Dostawy);
+
+          --To jest po to, by po wybuchu i naprawieniu robota nie eksplodował on ponownie
+          --ze względu na to, że zmienna Wybuchnie wciąż będzie równa True.
+          Wybuchnie := False;
+          if TranTowar = Boom_Plort then
+            Wybuchnie := Czy_Wybuchnie;
+          end if;
+
+          if Wybuchnie then
+            Czas_Do_Wybuchu := (Czas_Transportu / 100) * random;
+            delay Czas_Do_Wybuchu;
+            Put_Line("Bum! Robot " & Id_text(Id) & " z dostawą " & Id_text(TranId_dostawy) & " wybuchł!");
+            Status := Zepsuty;
+            TranIlosc := 0;
+          else
+
+            delay Czas_Transportu;
+            Calkowita_Ilosc := Calkowita_Ilosc - TranIlosc;
+
+            Dostarczono(Id, TranId_dostawy, Czy_Czesc_Dostawy);
+            Receive_Product(TranStorage.all, TranTowar, TranIlosc);
+            delay Czas_Transportu;
+
+          end if;
+        end loop;
       or
         accept Czy_Zepsuty(czy_zepsuty : out Boolean) do
           czy_zepsuty := Status = Zepsuty;
