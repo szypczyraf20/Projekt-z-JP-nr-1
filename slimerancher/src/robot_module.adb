@@ -160,6 +160,7 @@ package body robot_module is
             delay Czas_Do_Wybuchu;
             Put_Line("Bum! Robot " & Id_text(Id) & " z dostawą " & Id_text(TranId_dostawy) & " wybuchł!");
             Status := Zepsuty;
+            --Koniec transportu, plorty wybuchły.
             TranIlosc := 0;
           else
 
