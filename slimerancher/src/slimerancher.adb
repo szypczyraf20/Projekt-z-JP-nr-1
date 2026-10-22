@@ -5,7 +5,11 @@ with robot_module; use robot_module;
 with common_module; use common_module;
 
 procedure Slimerancher is
+  --Tak btw, Szymon ta zmienna Storage poniżej nie jest do niczego wykorzystywana. Ta,
+  --która jest parametrem dla robotów jest zadeklarowana w pliku dostawa.ads (nie
+  --umiałem jej w jakiś sprytny sposób przekazać do robotów)
    Storage : Warehouse_acc := new Warehouse_Storage;
+   --Tą zmienną pewnie też będziesz musiał przenieść.
    Status  : Storage_Status;
    dostawa_plortow : array (1 .. n_dostaw) of Ogarniacz_Plortow;
 begin
