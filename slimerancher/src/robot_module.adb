@@ -29,8 +29,15 @@ package body robot_module is
     return test <= Szansa_Eksplozji;
   end Czy_Wybuchnie;
 
-  --O godzinie 12:23 dnia bierzącego dodam informację o czasie w którym rozpoczęła się
-  --i zakończyła naprawa robota oraz przeniosę funkcję Log_Czas do common_module
+  --You are being terminated!
+  procedure Zakoncz_Roboty is
+  begin
+    for robot of r loop
+      robot.Zakoncz;
+    end loop;
+  end Zakoncz_Roboty;
+
+
   task body Serwis_Naprawczy_Type is
     Czas_Naprawy_Robota : Duration := 2.0;
     Id_Naprawianego : Integer := 0;
@@ -56,8 +63,7 @@ package body robot_module is
     Koniec : Boolean := False;
     Zepsuty : Boolean := False;
     TranTowar : Product_Type;
-    TranIlosc : Integer := 5;
-    TranSerwis : Serwis_Naprawczy_Type;
+    TranIlosc : Integer := 0;
     TranStorage : Warehouse_acc;
     TranId_dostawy : Integer;
     Czas_Transportu : Duration := 2.0;

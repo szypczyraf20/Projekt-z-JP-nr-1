@@ -13,6 +13,8 @@ package robot_module is
   function random return Zakres_1_100;
   function Czy_Wybuchnie return Boolean;
 
+  procedure Zakoncz_Roboty;
+
   task type Robot_Type is
 
     entry Transportuj(

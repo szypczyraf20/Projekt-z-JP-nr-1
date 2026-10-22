@@ -9,4 +9,11 @@ package body common_module is
   begin
       return "[" & Trim(Duration'Image(Roznica), Ada.Strings.Left) & "] ";
   end Log_Czas;
+
+  function Obecny_czas return Duration is
+      Aktualny_Czas : Time := Clock;
+      Roznica       : Duration := Aktualny_Czas - Czas_Startu;
+  begin
+      return Roznica;
+  end Obecny_czas;
 end common_module;

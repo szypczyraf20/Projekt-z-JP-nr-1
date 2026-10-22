@@ -13,5 +13,5 @@ package common_module is
 
     Czas_Startu : Time := Clock;
     function Log_Czas return String;
-
+    function Obecny_czas return Duration;
 end common_module;

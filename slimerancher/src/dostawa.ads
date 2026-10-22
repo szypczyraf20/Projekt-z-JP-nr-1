@@ -15,16 +15,7 @@ package Dostawa is
         Ilosc : Integer;
     end record;
 
-
-    Czas_Startu : Time := Clock;
-
-    --  r : Robot_Array(1 .. n_robotow);
     Storage : Warehouse_acc := new Warehouse_Storage;
-
-    --  procedure Zinicjalizuj_Roboty(n : Integer);
-    procedure Zakoncz_Roboty;
-
-    function Log_Czas return String;
 
     subtype Zakres is Integer range 1 .. 5;
     package Losowanie is
