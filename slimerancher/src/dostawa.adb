@@ -16,11 +16,18 @@ package body Dostawa is
     begin
         return "[" & Duration'Image(Roznica) & "] ";
     end Log_Czas;
+    function Obecny_czas return Duration is
+        Aktualny_Czas : Time := Clock;
+        Roznica       : Duration := Aktualny_Czas - Czas_Startu;
+    begin
+        return Roznica;
+    end Obecny_czas;
 
 
     task body Ogarniacz_Plortow is
         Dostawa_Rekord : Paczka_plortow;
         Stanowisko : Stanowisko_odbiorow;
+        Y : Duration;
     begin
         loop
             select
@@ -33,12 +40,14 @@ package body Dostawa is
 
                 Losowanie.Reset(Gen);
                 X := Losowanie.Random(Gen);
-                delay Duration(X);
+                Y := Duration(X) + Obecny_czas;
+                delay Y;
 
                 Put_Line (Log_Czas & "Teleportowała się dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Product_Type'Image(Dostawa_Rekord.Towar) & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
                 Put_Line (Log_Czas & "Dostawa: nr " & Integer'Image (Dostawa_Rekord.Id) & "  czeka na rozładunek");
+                
                 Stanowisko.rozladuj(Dostawa_Rekord.Id, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
-
+                
                     
             or
                 terminate;
@@ -54,7 +63,7 @@ package body Dostawa is
         loop
             select
                 accept rozladuj (Id : Integer; Towar : Product_Type; Ilosc : Integer) do
-                    Put_Line (Log_Czas & "Rozpoczeto rozładunek dostawy plortów: nr " & Integer'Image (Id));
+                    
                     Dostawa_Rekord.Id    := Id;
                     Dostawa_Rekord.Towar := Towar;
                     Dostawa_Rekord.Ilosc := Ilosc;
@@ -62,19 +71,21 @@ package body Dostawa is
                 x := Duration(Dostawa_Rekord.Ilosc/10);
                 delay Duration(x);
                 
-                Put_Line (Log_Czas & "Zakonczono rozładunek dostawy plortów: nr " & Integer'Image (Dostawa_Rekord.Id));
-                  
+                
+                
                 --Wyszukiwanie niezajętego robota.
-                for I in 1 .. n_robotow loop
-                  select
-                    r(I).Transportuj(Storage, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
-                    --Jeśli zostanie znaleziony - wychodzimy z pętli.
-                    exit;
-                  else
-                    --Jeśli nie - kontynuujemy, sprawdzamy następnego.
-                    null;
-                  end select;
-                end loop;
+                
+                    for I in 1 .. n_robotow loop
+                        select
+                            r(I).Transportuj(Storage, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc, Dostawa_Rekord.Id);
+                            --Jeśli zostanie znaleziony - wychodzimy z pętli.
+                            exit;
+                        else
+                            
+                            null;
+                        end select;
+                    end loop;
+                
                 --Jest przez to też możliwość, że nie zostanie znaleziony żaden wolny
                 --robot i to potencjalnie w przyszłości może być problem, ale na razie
                 --znajdujemy się w teraźniejszości, więc on nas nie dotyczy.

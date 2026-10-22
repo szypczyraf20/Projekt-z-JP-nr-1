@@ -30,7 +30,7 @@ package body robot_module is
     TranTowar : Product_Type;
     TranIlosc : Integer := 5;
     TranStorage : Warehouse_acc;
-
+    TranId_dostawy : Integer;
   begin
     while not Koniec loop
       select
@@ -39,25 +39,28 @@ package body robot_module is
         accept Transportuj(
           Storage : Warehouse_acc;
           Towar : Product_Type;
-          Ilosc : Integer
+          Ilosc : Integer;
+          Id_dostawy : Integer
         ) do
 
           Put_Line(
             Log_Czas &
             "<R" & Id_text(Id) &
-            "> otrzymałem transport"
+            "> otrzymałem transport " &
+            "nr " & Id_text(Id_dostawy)
           );
           TranStorage := Storage;
           TranTowar := Towar;
           TranIlosc := Ilosc;
-
+          TranId_dostawy :=Id_dostawy;
 
         end Transportuj;
 
         Put_Line(
           Log_Czas &
           "<R" & Id_text(Id) &
-          "> jadę"
+          "> jadę z dostawą " &
+          "nr " & Id_text(TranId_dostawy)
         );
 
         delay 2.0;
@@ -67,7 +70,8 @@ package body robot_module is
         Put_Line(
           Log_Czas &
           "<R" & Id_text(Id) &
-          "> dostarczono transport."
+          "> dostarczono transport " &
+          "nr " & Id_text(TranId_dostawy)
         );
 
       or

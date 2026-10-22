@@ -16,7 +16,8 @@ package robot_module is
     entry Transportuj(
       Storage : Warehouse_acc;
       Towar : Product_Type;
-      Ilosc : Integer
+      Ilosc : Integer;
+      Id_dostawy : Integer
     );
     entry Zakoncz;
 
