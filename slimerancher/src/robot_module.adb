@@ -103,6 +103,9 @@ package body robot_module is
           "nr " & Id_text(TranId_dostawy)
         );
 
+        --To jest po to, by po wybuchu i naprawieniu robota nie eksplodował on ponownie
+        --ze względu na to, że zmienna Wybuchnie wciąż będzie równa True.
+        Wybuchnie := False;
         if TranTowar = Boom_Plort then
           Wybuchnie := Czy_Wybuchnie;
         end if;
@@ -110,7 +113,7 @@ package body robot_module is
         if Wybuchnie then
           Czas_Do_Wybuchu := (Czas_Transportu / 100) * random;
           delay Czas_Do_Wybuchu;
-          Put_Line("Bum! Robot " & Id_text(Id) & " wybuchł!");
+          Put_Line("Bum! Robot " & Id_text(Id) & " z dostawą " & Id_text(TranId_dostawy) & " wybuchł!");
           Status := Zepsuty;
         else
 
