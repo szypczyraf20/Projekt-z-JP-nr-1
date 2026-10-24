@@ -2,18 +2,53 @@ with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 with Warehouse; use Warehouse;
 with common_module; use common_module;
+with Dostawa; use Dostawa;
+with Monitor; use Monitor;
 
 package body robot_module is
 
+  protected body Robot_Status_Tracker is
+    procedure Ustaw_Status (Id : Integer; Stan : Status_Type) is
+    begin
+      Statusy (Id) := Stan;
+    end Ustaw_Status;
+
+    procedure Ustaw_Aktywnosc (Id : Integer; Czy_Pracuje : Boolean) is
+    begin
+      Aktywne (Id) := Czy_Pracuje;
+    end Ustaw_Aktywnosc;
+
+    function Pobierz_Status (Id : Integer) return Status_Type is
+    begin
+      return Statusy (Id);
+    end Pobierz_Status;
+
+    function Pobierz_Aktywnosc (Id : Integer) return Boolean is
+    begin
+      return Aktywne (Id);
+    end Pobierz_Aktywnosc;
+
+    function Return_Counts return Status_Counts is
+      Counts : Status_Counts := (others => 0);
+    begin
+      for I in 1 .. n_robotow loop
+        if not r (I)'Terminated then
+          if Aktywne (I) and then Statusy (I) = Dziala then
+            Counts (Dziala) := Counts (Dziala) + 1;
+          elsif Statusy (I) = W_naprawie then
+            Counts (W_naprawie) := Counts (W_naprawie) + 1;
+          elsif Statusy (I) = Zepsuty then
+            Counts (Zepsuty) := Counts (Zepsuty) + 1;
+          end if;
+        end if;
+      end loop;
+      return Counts;
+    end Return_Counts;
+  end Robot_Status_Tracker;
+
   function Get_Robot_Status return Status_Counts is
-    Counts : Status_Counts := (others => 0);
-    S : Status_Type;
   begin
-    for I in r'Range loop
-      r(I).Zwroc_Status(S);
-      Counts(S) := Counts(S) + 1;
-    end loop;
-    return counts;
+    return Robot_Status_Tracker.Return_Counts;
   end Get_Robot_Status;
 
   function Zwroc_i_zwieksz_id return Integer is
@@ -46,14 +81,14 @@ package body robot_module is
       Put_Line(
         Log_Czas &
         "<R" & Id_text(Id) &
-        "> jadę z częścią dostawy " &
+        "> jade z czescia dostawy " &
         "nr " & Id_text(TranId_dostawy)
       );
     else
       Put_Line(
         Log_Czas &
         "<R" & Id_text(Id) &
-        "> jadę z dostawą " &
+        "> jade z dostawa " &
         "nr " & Id_text(TranId_dostawy)
       );
     end if;
@@ -65,7 +100,7 @@ package body robot_module is
       Put_Line(
         Log_Czas &
         "<R" & Id_text(Id) &
-        "> dostarczono część transportu " &
+        "> dostarczono czesc transportu " &
         "nr " & Id_text(TranId_dostawy)
       );
     else
@@ -78,7 +113,6 @@ package body robot_module is
     end if;
   end Dostarczono;
 
-  --You are being terminated!
   procedure Zakoncz_Roboty is
   begin
     for robot of r loop
@@ -86,9 +120,8 @@ package body robot_module is
     end loop;
   end Zakoncz_Roboty;
 
-
   task body Serwis_Naprawczy_Type is
-    Czas_Naprawy_Robota : Duration := 2.0;
+    Czas_Naprawy_Robota : Duration := 3.0 + Duration(Losowanie_1_10.Random(Gen_1_10));
     Id_Naprawianego : Integer := 0;
   begin
     loop
@@ -97,15 +130,21 @@ package body robot_module is
           robot.Do_Naprawy;
           robot.Zwroc_Id(Id_Naprawianego);
           Put_Line(Log_Czas & "Naprawiam robota o id " & Id_text(Id_Naprawianego) & "...");
-          delay Czas_Naprawy_Robota;
-          Put_Line(Log_Czas & "Zakonczono naprawe robota R" & Id_text(Id_Naprawianego) & ".");
-          robot.Uruchom_Ponownie;
+          select
+            delay 3.0;
+            Put_Line(Log_Czas & "Naprawa robota R" & Id_text(Id_Naprawianego) & " przekroczyla limit 3s i robot zostal wymieniony.");
+            robot.Uruchom_Ponownie;
+          then abort
+            delay Czas_Naprawy_Robota;
+            Put_Line(Log_Czas & "Zakonczono naprawe robota R" & Id_text(Id_Naprawianego) & ".");
+            robot.Uruchom_Ponownie;
+          end select;
         end Napraw;
       or
         terminate;
       end select;
     end loop;
-  end Serwis_Naprawczy_Type;	
+  end Serwis_Naprawczy_Type;
 
   task body Robot_Type is
 
@@ -123,10 +162,11 @@ package body robot_module is
     Czas_Do_Wybuchu : Duration := 0.0;
     Czy_Czesc_Dostawy : Boolean;
   begin
+    Robot_Status_Tracker.Ustaw_Status (Id, Dziala);
+    Robot_Status_Tracker.Ustaw_Aktywnosc (Id, False);
+
     while not Koniec loop
       select
-
-      --We have a serious fucking problem.
       when Status = Dziala =>
         accept Transportuj(
           Storage : Warehouse_acc;
@@ -134,7 +174,6 @@ package body robot_module is
           Ilosc : Integer;
           Id_dostawy : Integer
         ) do
-
           Put_Line(
             Log_Czas &
             "<R" & Id_text(Id) &
@@ -145,9 +184,9 @@ package body robot_module is
           TranTowar := Towar;
           Calkowita_Ilosc := Ilosc;
           TranId_dostawy := Id_dostawy;
-
         end Transportuj;
 
+        Robot_Status_Tracker.Ustaw_Aktywnosc(Id, True);
         TranIlosc := Integer'Min(Calkowita_Ilosc, Pojemnosc);
         if Calkowita_Ilosc <= Pojemnosc then
           Czy_Czesc_Dostawy := False;
@@ -159,8 +198,6 @@ package body robot_module is
           TranIlosc := Integer'Min(Calkowita_Ilosc, Pojemnosc);
           Jade_z(Id, TranId_dostawy, Czy_Czesc_Dostawy);
 
-          --To jest po to, by po wybuchu i naprawieniu robota nie eksplodował on ponownie
-          --ze względu na to, że zmienna Wybuchnie wciąż będzie równa True.
           Wybuchnie := False;
           if TranTowar = Boom_Plort then
             Wybuchnie := Czy_Wybuchnie;
@@ -169,9 +206,9 @@ package body robot_module is
           if Wybuchnie then
             Czas_Do_Wybuchu := (Czas_Transportu / 100) * random;
             delay Czas_Do_Wybuchu;
-            Put_Line("Bum! Robot " & Id_text(Id) & " z dostawą " & Id_text(TranId_dostawy) & " wybuchł!");
+            Put_Line("Bum! Robot " & Id_text(Id) & " z dostawa " & Id_text(TranId_dostawy) & " wybuchl!");
             Status := Zepsuty;
-            --Koniec transportu, plorty wybuchły.
+            Robot_Status_Tracker.Ustaw_Status(Id, Zepsuty);
             TranIlosc := 0;
           else
 
@@ -184,29 +221,34 @@ package body robot_module is
 
           end if;
         end loop;
-      or
-        accept Czy_Zepsuty(czy_zepsuty : out Boolean) do
-          czy_zepsuty := Status = Zepsuty;
-        end Czy_Zepsuty;
+
+      --    Robot_Status_Tracker.Ustaw_Aktywnosc (Id, False);
+      --    Robot_Status_Tracker.Ustaw_Status (Id, Dziala);
       or
         accept Zwroc_Status(S : out Status_Type) do
-          S := Status;
+          S := Robot_Status_Tracker.Pobierz_Status(Id);
         end Zwroc_Status;
       or
-        accept Do_Naprawy;
-        Status := W_naprawie;
+        accept Do_Naprawy do
+          Status := W_naprawie;
+          Robot_Status_Tracker.Ustaw_Status(Id, W_naprawie);
+          Robot_Status_Tracker.Ustaw_Aktywnosc(Id, False);
+        end Do_Naprawy;
       or
-        accept Uruchom_Ponownie;
-        Status := Dziala;
+        accept Uruchom_Ponownie do
+          Status := Dziala;
+          Robot_Status_Tracker.Ustaw_Status(Id, Dziala);
+          Robot_Status_Tracker.Ustaw_Aktywnosc(Id, False);
+        end Uruchom_Ponownie;
       or
         accept Zwroc_Id(I : out Integer) do
           I := Id;
         end Zwroc_Id;
       or
-        accept Zakoncz;
-        Koniec := True;
-
-      --W najlepszym wypadku to jest tymczasowe.
+        accept Zakoncz do
+          Robot_Status_Tracker.Ustaw_Aktywnosc(Id, False);
+          Koniec := True;
+        end Zakoncz;
       or
         terminate;
 

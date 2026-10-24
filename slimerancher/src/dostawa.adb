@@ -2,9 +2,28 @@ with common_module; use common_module;
 
 package body Dostawa is
 
+    protected Delivery_Counter is
+        procedure Increment;
+        function Get return Natural;
+    private
+        Count : Natural := 0;
+    end Delivery_Counter;
+
+    protected body Delivery_Counter is
+        procedure Increment is
+        begin
+            Count := Count + 1;
+        end Increment;
+
+        function Get return Natural is
+        begin
+            return Count;
+        end Get;
+    end Delivery_Counter;
+
     function Get_Total_Deliveries return Natural is
     begin
-        return Total_Deliveries;
+        return Delivery_Counter.Get;
     end Get_Total_Deliveries;
 
     task body Ogarniacz_Plortow is
@@ -23,8 +42,6 @@ package body Dostawa is
                     Dostawa_Rekord.Ilosc := Ilosc;
                 end Zarejestruj;
 
-                Total_Deliveries := Total_Deliveries + 1;
-
                 Reset(G);
                 Losowanie.Reset(Gen);
                 X := Losowanie.Random(Gen);
@@ -35,7 +52,7 @@ package body Dostawa is
                 Put_Line (Log_Czas & "Dostawa: nr " & Integer'Image (Dostawa_Rekord.Id) & "  czeka na rozladunek");
                 
                 Stanowisko.rozladuj(Dostawa_Rekord.Id, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
-                
+                Delivery_Counter.Increment;
                     
             or
                 terminate;
@@ -111,8 +128,7 @@ package body Dostawa is
 
                 --Jest przez to też możliwość, że nie zostanie znaleziony żaden wolny
                 --robot i to potencjalnie w przyszłości może być problem, ale na razie
-                --znajdujemy się w teraźniejszości, więc on nas nie dotyczy.
-                
+                --znajdujemy się w teraźniejszości, więc on nas nie dotyczy.                
             or
                 terminate;
             end select;

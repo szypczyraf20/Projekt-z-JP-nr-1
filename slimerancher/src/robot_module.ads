@@ -19,6 +19,20 @@ package robot_module is
 
   type Status_Type is (Dziala, Zepsuty, W_naprawie);
   type Status_Counts is array (Status_Type) of Natural;
+  type Robot_Status_Array is array (1 .. n_robotow) of Status_Type;
+  type Robot_Active_Array is array (1 .. n_robotow) of Boolean;
+
+  protected Robot_Status_Tracker is
+    procedure Ustaw_Status (Id : Integer; Stan : Status_Type);
+    procedure Ustaw_Aktywnosc (Id : Integer; Czy_Pracuje : Boolean);
+    function Pobierz_Status (Id : Integer) return Status_Type;
+    function Pobierz_Aktywnosc (Id : Integer) return Boolean;
+    function Return_Counts return Status_Counts;
+  private
+    Statusy : Robot_Status_Array := (others => Dziala);
+    Aktywne : Robot_Active_Array := (others => False);
+  end Robot_Status_Tracker;
+
   function Get_Robot_Status return Status_Counts;
 
   task type Robot_Type is
@@ -29,13 +43,11 @@ package robot_module is
       Ilosc : Integer;
       Id_dostawy : Integer
     );
-    entry Czy_Zepsuty(czy_zepsuty : out Boolean);
     entry Zwroc_Id(I : out Integer);
     entry Zwroc_Status(S : out Status_Type);
     entry Do_Naprawy;
     entry Uruchom_Ponownie;
     entry Zakoncz;
-    entry Pusty_accept;
 
   end Robot_Type;
 

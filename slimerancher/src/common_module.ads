@@ -22,6 +22,11 @@ package common_module is
         new Ada.Numerics.Discrete_Random(Zakres_10_100);
     Gen_10_100 : Losowanie_10_100.Generator;
 
+    subtype Zakres_1_10 is integer range 1 .. 10;
+    package Losowanie_1_10 is
+         new Ada.Numerics.Discrete_Random(Zakres_1_10);
+    Gen_1_10 : Losowanie_1_10.Generator;
+
     Czas_Startu : Time := Clock;
     function Log_Czas return String;
     function Obecny_czas return Duration;

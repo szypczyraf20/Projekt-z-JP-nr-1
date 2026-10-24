@@ -43,7 +43,11 @@ package body Monitor is
       end loop;
       Put_Line ("| Robots in repair : " & Format (Status.Robots_InRepair));
       Put_Line ("| Robots working : " & Format (Status.Robots_Working));
-      Put_Line ("| Robots error : " & Format (Status.Robots_Error));
+      if Status.Robots_Error > 0 then
+         Put_Line ("| Robots error : " & Format (Status.Robots_Error) & " (awaria)");
+      else
+         Put_Line ("| Robots error : " & Format (Status.Robots_Error));
+      end if;
       Put_Line (Border);
    end Display_Status;
 
