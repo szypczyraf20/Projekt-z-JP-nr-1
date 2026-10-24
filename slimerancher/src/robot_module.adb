@@ -1,9 +1,20 @@
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
-with warehouse; use warehouse;
+with Warehouse; use Warehouse;
 with common_module; use common_module;
 
 package body robot_module is
+
+  function Get_Robot_Status return Status_Counts is
+    Counts : Status_Counts := (others => 0);
+    S : Status_Type;
+  begin
+    for I in r'Range loop
+      r(I).Zwroc_Status(S);
+      Counts(S) := Counts(S) + 1;
+    end loop;
+    return counts;
+  end Get_Robot_Status;
 
   function Zwroc_i_zwieksz_id return Integer is
   begin
@@ -87,7 +98,7 @@ package body robot_module is
           robot.Zwroc_Id(Id_Naprawianego);
           Put_Line(Log_Czas & "Naprawiam robota o id " & Id_text(Id_Naprawianego) & "...");
           delay Czas_Naprawy_Robota;
-          Put_Line(Log_Czas & "Zakończono naprawę robota R" & Id_text(Id_Naprawianego) & ".");
+          Put_Line(Log_Czas & "Zakonczono naprawe robota R" & Id_text(Id_Naprawianego) & ".");
           robot.Uruchom_Ponownie;
         end Napraw;
       or
@@ -127,7 +138,7 @@ package body robot_module is
           Put_Line(
             Log_Czas &
             "<R" & Id_text(Id) &
-            "> otrzymałem transport " &
+            "> otrzymalem transport " &
             "nr " & Id_text(Id_dostawy)
           );
           TranStorage := Storage;

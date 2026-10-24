@@ -2,6 +2,11 @@ with common_module; use common_module;
 
 package body Dostawa is
 
+    function Get_Total_Deliveries return Natural is
+    begin
+        return Total_Deliveries;
+    end Get_Total_Deliveries;
+
     task body Ogarniacz_Plortow is
         Dostawa_Rekord : Paczka_plortow;
         Stanowisko : Stanowisko_odbiorow;
@@ -17,14 +22,17 @@ package body Dostawa is
                     Dostawa_Rekord.Towar := Towar;
                     Dostawa_Rekord.Ilosc := Ilosc;
                 end Zarejestruj;
+
+                Total_Deliveries := Total_Deliveries + 1;
+
                 Reset(G);
                 Losowanie.Reset(Gen);
                 X := Losowanie.Random(Gen);
                 Y := Duration(Random(G)*10.0);
                 delay Y;
 
-                Put_Line (Log_Czas & "Teleportowała się dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Product_Type'Image(Dostawa_Rekord.Towar) & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
-                Put_Line (Log_Czas & "Dostawa: nr " & Integer'Image (Dostawa_Rekord.Id) & "  czeka na rozładunek");
+                Put_Line (Log_Czas & "Teleportowala sie dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Product_Type'Image(Dostawa_Rekord.Towar) & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
+                Put_Line (Log_Czas & "Dostawa: nr " & Integer'Image (Dostawa_Rekord.Id) & "  czeka na rozladunek");
                 
                 Stanowisko.rozladuj(Dostawa_Rekord.Id, Dostawa_Rekord.Towar, Dostawa_Rekord.Ilosc);
                 
@@ -97,7 +105,7 @@ package body Dostawa is
                 
                 if not Znaleziono_Robota then
                     delay 2.0;
-                    Put_Line (Log_Czas & "Plorty z dostawy: nr " & Integer'Image (Dostawa_Rekord.Id) & " zniknęły");
+                    Put_Line (Log_Czas & "Plorty z dostawy: nr " & Integer'Image (Dostawa_Rekord.Id) & " zniknely");
                     
                 end if;
 

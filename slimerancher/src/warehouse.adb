@@ -4,7 +4,7 @@ package body Warehouse is
 
    procedure Initialize
      (This     : in out Warehouse_Storage;
-      Capacity : Positive := 10)
+      Capacity : Positive := 100)
    is
    begin
       This.Capacity := Capacity;

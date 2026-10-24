@@ -18,6 +18,8 @@ package robot_module is
   procedure Zakoncz_Roboty;
 
   type Status_Type is (Dziala, Zepsuty, W_naprawie);
+  type Status_Counts is array (Status_Type) of Natural;
+  function Get_Robot_Status return Status_Counts;
 
   task type Robot_Type is
 
@@ -33,6 +35,7 @@ package robot_module is
     entry Do_Naprawy;
     entry Uruchom_Ponownie;
     entry Zakoncz;
+    entry Pusty_accept;
 
   end Robot_Type;
 

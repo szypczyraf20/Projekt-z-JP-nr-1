@@ -11,14 +11,17 @@ use  Ada.Numerics.Float_Random;
 
 package Dostawa is
 
+    Total_Deliveries : Natural := 0;
+
     Type Paczka_plortow is record
         Id : Integer;
         Towar : Product_Type;
         Ilosc : Integer;
     end record;
-
     Storage : Warehouse_acc := new Warehouse_Storage;
     Czas_do_znikniecia : Duration := 2.0;
+
+    function Get_Total_Deliveries return Natural;
 
     subtype Zakres is Integer range 1 .. 20;
     package Losowanie is

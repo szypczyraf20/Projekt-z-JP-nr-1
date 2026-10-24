@@ -14,7 +14,7 @@ package Warehouse is
 
    procedure Initialize
      (This     : in out Warehouse_Storage;
-      Capacity : Positive := 10);
+      Capacity : Positive := 100);
    procedure Receive_Product
      (This    : in out Warehouse_Storage;
       Product : Product_Type;
