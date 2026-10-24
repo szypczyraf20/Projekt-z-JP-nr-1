@@ -6,6 +6,8 @@ use Ada.Calendar;
 with common_module; use common_module;
 with robot_module; use robot_module;
 with warehouse; use warehouse;
+with Ada.Numerics.Float_Random;
+use  Ada.Numerics.Float_Random;
 
 package Dostawa is
 

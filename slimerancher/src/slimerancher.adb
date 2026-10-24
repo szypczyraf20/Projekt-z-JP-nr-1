@@ -8,7 +8,7 @@ with Monitor; use Monitor;
 procedure Slimerancher is
    dostawa_plortow : array (1 .. n_dostaw) of Ogarniacz_Plortow;
 begin
-   Initialize (Storage.all, 100);
+   Initialize (Storage.all, 3000);
    Display_Status (Storage.all); -- Pierwszy print statusu magazynu
    declare
       dostawa_plortow : array (1 .. n_dostaw) of Ogarniacz_Plortow;

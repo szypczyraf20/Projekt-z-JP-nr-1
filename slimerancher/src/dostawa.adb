@@ -11,6 +11,8 @@ package body Dostawa is
         Dostawa_Rekord : Paczka_plortow;
         Stanowisko : Stanowisko_odbiorow;
         Y : Duration;
+        G : Generator;
+        Z : Uniformly_Distributed;
     begin
         loop
             select
@@ -23,9 +25,10 @@ package body Dostawa is
 
                 Total_Deliveries := Total_Deliveries + 1;
 
+                Reset(G);
                 Losowanie.Reset(Gen);
                 X := Losowanie.Random(Gen);
-                Y := Duration(X) + Obecny_czas;
+                Y := Duration(Random(G)*10.0);
                 delay Y;
 
                 Put_Line (Log_Czas & "Teleportowala sie dostawa: nr" & Integer'Image (Dostawa_Rekord.Id) & "  " & Product_Type'Image(Dostawa_Rekord.Towar) & " " & Integer'Image (Dostawa_Rekord.Ilosc) & " sztuk");
