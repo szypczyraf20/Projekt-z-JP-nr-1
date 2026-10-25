@@ -194,7 +194,7 @@ package body robot_module is
           Czy_Czesc_Dostawy := True;
         end if;
 
-        while(TranIlosc > 0) loop
+        while(Calkowita_Ilosc > 0) loop
           TranIlosc := Integer'Min(Calkowita_Ilosc, Pojemnosc);
           Jade_z(Id, TranId_dostawy, Czy_Czesc_Dostawy);
 
@@ -209,14 +209,16 @@ package body robot_module is
             Put_Line("Bum! Robot " & Id_text(Id) & " z dostawa " & Id_text(TranId_dostawy) & " wybuchl!");
             Status := Zepsuty;
             Robot_Status_Tracker.Ustaw_Status(Id, Zepsuty);
+            Calkowita_Ilosc := 0;
             TranIlosc := 0;
           else
 
             delay Czas_Transportu;
-            Calkowita_Ilosc := Calkowita_Ilosc - TranIlosc;
 
+            Calkowita_Ilosc := Calkowita_Ilosc - TranIlosc;
             Dostarczono(Id, TranId_dostawy, Czy_Czesc_Dostawy);
             Receive_Product(TranStorage.all, TranTowar, TranIlosc);
+
             delay Czas_Transportu;
 
           end if;
