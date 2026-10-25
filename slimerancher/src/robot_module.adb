@@ -75,39 +75,53 @@ package body robot_module is
     return test <= Szansa_Eksplozji;
   end Czy_Wybuchnie;
 
-  procedure Jade_z(Id : Integer; TranId_dostawy : Integer; czy_czesc : Boolean) is
+  procedure Jade_z(Id : Integer; TranId_dostawy : Integer; czy_czesc : Czesc_Dostawy_Type) is
   begin
-    if czy_czesc = True then
+    if czy_czesc = Czesc then
       Put_Line(
         Log_Czas &
         "<R" & Id_text(Id) &
         "> jade z czescia dostawy " &
         "nr " & Id_text(TranId_dostawy)
       );
-    else
+    elsif czy_czesc = Calosc then
       Put_Line(
         Log_Czas &
         "<R" & Id_text(Id) &
         "> jade z dostawa " &
         "nr " & Id_text(TranId_dostawy)
       );
+    else
+      Put_Line(
+        Log_Czas &
+        "<R" & Id_text(Id) &
+        "> jade z reszta dostawy " &
+        "nr " & Id_text(TranId_dostawy)
+      );
     end if;
   end Jade_z;
 
-  procedure Dostarczono(Id : Integer; TranId_dostawy : Integer; czy_czesc : Boolean) is
+  procedure Dostarczono(Id : Integer; TranId_dostawy : Integer; czy_czesc : Czesc_Dostawy_Type) is
   begin
-    if czy_czesc = True then
+    if czy_czesc = Czesc then
       Put_Line(
         Log_Czas &
         "<R" & Id_text(Id) &
         "> dostarczono czesc transportu " &
         "nr " & Id_text(TranId_dostawy)
       );
-    else
+    elsif czy_czesc = Calosc then
       Put_Line(
         Log_Czas &
         "<R" & Id_text(Id) &
         "> dostarczono transport " &
+        "nr " & Id_text(TranId_dostawy)
+      );
+    else
+      Put_Line(
+        Log_Czas &
+        "<R" & Id_text(Id) &
+        "> dostarczono reszte transportu " &
         "nr " & Id_text(TranId_dostawy)
       );
     end if;
@@ -160,7 +174,7 @@ package body robot_module is
     Czas_Transportu : Duration := 2.0;
     Wybuchnie : Boolean := False;
     Czas_Do_Wybuchu : Duration := 0.0;
-    Czy_Czesc_Dostawy : Boolean;
+    Czy_Czesc_Dostawy : Czesc_Dostawy_Type;
   begin
     Robot_Status_Tracker.Ustaw_Status (Id, Dziala);
     Robot_Status_Tracker.Ustaw_Aktywnosc (Id, False);
@@ -189,9 +203,9 @@ package body robot_module is
         Robot_Status_Tracker.Ustaw_Aktywnosc(Id, True);
         TranIlosc := Integer'Min(Calkowita_Ilosc, Pojemnosc);
         if Calkowita_Ilosc <= Pojemnosc then
-          Czy_Czesc_Dostawy := False;
+          Czy_Czesc_Dostawy := Calosc;
         else
-          Czy_Czesc_Dostawy := True;
+          Czy_Czesc_Dostawy := Czesc;
         end if;
 
         while(Calkowita_Ilosc > 0) loop
@@ -218,6 +232,9 @@ package body robot_module is
             Calkowita_Ilosc := Calkowita_Ilosc - TranIlosc;
             Dostarczono(Id, TranId_dostawy, Czy_Czesc_Dostawy);
             Receive_Product(TranStorage.all, TranTowar, TranIlosc);
+            if Calkowita_Ilosc <= Pojemnosc then
+              Czy_Czesc_Dostawy := Reszta;
+            end if;
 
             delay Czas_Transportu;
 

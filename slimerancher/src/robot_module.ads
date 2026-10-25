@@ -13,8 +13,9 @@ package robot_module is
   function random return Zakres_1_100;
   function Czy_Wybuchnie return Boolean;
 
-  procedure Jade_z(Id : Integer; TranId_dostawy : Integer; czy_czesc : Boolean);
-  procedure Dostarczono(Id : Integer; TranId_dostawy : Integer; czy_czesc : Boolean);
+  type Czesc_Dostawy_Type is (Calosc, Czesc, Reszta);
+  procedure Jade_z(Id : Integer; TranId_dostawy : Integer; czy_czesc : Czesc_Dostawy_Type);
+  procedure Dostarczono(Id : Integer; TranId_dostawy : Integer; czy_czesc : Czesc_Dostawy_Type);
   procedure Zakoncz_Roboty;
 
   type Status_Type is (Dziala, Zepsuty, W_naprawie);
