@@ -7,3 +7,6 @@ maintainers = ["Simon <example@example.com>"]
 licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
 website = ""
 tags = []
+[build-switches]
+"*".style_checks = "No"
+"*".compile_checks = "none"
