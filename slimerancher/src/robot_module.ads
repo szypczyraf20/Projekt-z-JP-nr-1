@@ -6,7 +6,7 @@ package robot_module is
 
   Obecne_Id : Integer := 0;
   Czas_Startu : Time := Clock;
-  Szansa_Eksplozji : Integer := 100;
+  Szansa_Eksplozji : Integer := 25;
 
   function Zwroc_i_zwieksz_id return Integer;
   function Id_text(Id : Integer) return String;
